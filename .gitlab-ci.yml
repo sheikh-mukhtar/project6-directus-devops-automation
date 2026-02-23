@@ -1,0 +1,152 @@
+stages:
+  - validate
+  - plan
+  - provision
+  - deploy
+  - test
+  - cleanup
+
+variables:
+  TF_ROOT: terraform
+
+terraform_validate:
+  stage: validate
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform
+    - terraform init
+    - terraform validate
+
+terraform_plan:
+  stage: plan
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - cd terraform
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - terraform/tfplan
+
+terraform_apply:
+  stage: provision
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  when: manual
+  script:
+    - cd terraform
+    - terraform init
+    - terraform apply -auto-approve
+    - terraform output -raw public_ip > ../server_ip.txt
+    - terraform output -raw private_key > ../ssh_key.pem
+    - chmod 600 ../ssh_key.pem
+
+  artifacts:
+    paths:
+      - server_ip.txt
+      - ssh_key.pem
+
+deploy_directus:
+  stage: deploy
+  image: alpine:latest
+
+  needs:
+    - terraform_apply
+
+  dependencies:
+    - terraform_apply
+
+  script:
+    - apk add --no-cache openssh-client bash curl
+
+    # read server ip
+    - SERVER_IP=$(cat server_ip.txt)
+
+    # fix ssh permissions
+    - chmod 600 ssh_key.pem
+
+    # create env file
+    - echo "ADMIN_EMAIL=$ADMIN_EMAIL" > .env
+    - echo "ADMIN_PASSWORD=$ADMIN_PASSWORD" >> .env
+    - echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+    - echo "DIRECTUS_SECRET=$DIRECTUS_SECRET" >> .env
+
+    # wait for EC2 to fully initialize
+    - echo "Waiting for EC2 initialization..."
+    - sleep 60
+
+    # wait until docker is ready
+    - |
+      ssh -i ssh_key.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
+        echo "Waiting for docker..."
+        while ! command -v docker > /dev/null; do
+          sleep 5
+        done
+        echo "Docker ready"
+      EOF
+
+    # copy files
+    - scp -i ssh_key.pem -o StrictHostKeyChecking=no docker-compose.yml ubuntu@$SERVER_IP:/home/ubuntu/
+    - scp -i ssh_key.pem -o StrictHostKeyChecking=no .env ubuntu@$SERVER_IP:/home/ubuntu/
+
+    # deploy directus
+    - |
+      ssh -i ssh_key.pem -o StrictHostKeyChecking=no ubuntu@$SERVER_IP << 'EOF'
+        cd /home/ubuntu
+        docker-compose up -d
+      EOF
+test_directus:
+  stage: test
+  image: alpine:latest
+
+  needs:
+    - terraform_apply
+    - deploy_directus
+
+  dependencies:
+    - terraform_apply
+
+  script:
+    - apk add --no-cache curl
+
+    - SERVER_IP=$(cat server_ip.txt)
+
+    - echo "Checking Directus health..."
+
+    - |
+      for i in {1..10}; do
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://$SERVER_IP:8055/server/health || true)
+
+        if [ "$STATUS" = "200" ]; then
+          echo "Directus is running successfully"
+          exit 0
+        fi
+
+        echo "Waiting for Directus..."
+        sleep 10
+      done
+
+    - echo "Directus failed to start"
+    - exit 1
+
+cleanup_infra:
+  stage: cleanup
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+
+  when: manual   # important — prevents accidental destroy
+
+  script:
+    - cd terraform
+    - terraform init
+    - terraform destroy -auto-approve
+
+  environment:
+    name: production
+    action: stop    

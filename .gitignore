@@ -1,0 +1,67 @@
+# =========================
+# Terraform files
+# =========================
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+terraform.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan files
+tfplan
+*.tfplan
+
+# =========================
+# Sensitive keys
+# =========================
+*.pem
+*.key
+*.pub
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# SSH and server artifacts
+# =========================
+server_ip.txt
+ssh_key.pem
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE files
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# GitLab artifacts (optional local)
+# =========================
+artifacts/
