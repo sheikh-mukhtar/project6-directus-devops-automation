@@ -84,6 +84,10 @@ Terraform Outputs:
 
 The pipeline consists of the following stages:
 
+<img width="1919" height="875" alt="Screenshot 2026-02-23 075237" src="https://github.com/user-attachments/assets/56620517-a019-48b1-beb7-30143c5f3443" />
+
+
+
 ### Stage 1: Validate
 
 Validates Terraform configuration
@@ -107,6 +111,9 @@ terraform plan
 
 Creates AWS infrastructure
 
+<img width="1919" height="861" alt="Screenshot 2026-02-23 075933" src="https://github.com/user-attachments/assets/9cc20fd2-6433-4864-93cd-c8cab622994e" />
+
+
 terraform apply  
 
 Extracts:
@@ -121,6 +128,9 @@ These files are passed to next stages as artifacts.
 ### Stage 4: Deploy
 
 Pipeline performs the following actions:
+
+<img width="1919" height="989" alt="Screenshot 2026-02-23 081316" src="https://github.com/user-attachments/assets/20f7a1fe-3165-4ae7-ad30-461f3075b175" />
+
 
 - Connects to EC2 using SSH
 - Copies docker-compose.yml
@@ -148,9 +158,6 @@ Destroys infrastructure
 terraform destroy
 
 This stage is manually triggered when cleanup is required.
-
-<img width="1919" height="875" alt="Screenshot 2026-02-23 075237" src="https://github.com/user-attachments/assets/56620517-a019-48b1-beb7-30143c5f3443" />
-
 
 ---
 
