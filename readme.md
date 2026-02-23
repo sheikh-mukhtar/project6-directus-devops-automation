@@ -54,6 +54,8 @@ directus-devops-assessment/
 ├── .gitignore
 └── README.md
 ```
+
+ <img width="1919" height="883" alt="Screenshot 2026-02-23 075322" src="https://github.com/user-attachments/assets/ccb0e68e-c8d2-40f5-8317-5b317cafb90c" />
 ---
 
 ## Infrastructure Provisioning using Terraform
@@ -223,9 +225,6 @@ Step 5: Access Directus via browser
 - Automated Deployment Workflow
 - SSH Key Authentication
 - GitLab CI/CD Pipeline Design
-
-  <img width="1919" height="883" alt="Screenshot 2026-02-23 075322" src="https://github.com/user-attachments/assets/ccb0e68e-c8d2-40f5-8317-5b317cafb90c" />
-
 
 ---
 
