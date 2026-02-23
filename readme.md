@@ -58,6 +58,9 @@ directus-devops-assessment/
 
 ## Infrastructure Provisioning using Terraform
 
+<img width="1914" height="759" alt="Screenshot 2026-02-23 081343" src="https://github.com/user-attachments/assets/11265bba-8c69-46f7-aff6-6256965e0edb" />
+
+
 Terraform provisions the following AWS resources:
 
 - TLS Private Key (RSA 4096-bit)
@@ -146,6 +149,9 @@ terraform destroy
 
 This stage is manually triggered when cleanup is required.
 
+<img width="1919" height="875" alt="Screenshot 2026-02-23 075237" src="https://github.com/user-attachments/assets/56620517-a019-48b1-beb7-30143c5f3443" />
+
+
 ---
 
 ## Environment Variables
@@ -211,6 +217,9 @@ Step 5: Access Directus via browser
 - SSH Key Authentication
 - GitLab CI/CD Pipeline Design
 
+  <img width="1919" height="883" alt="Screenshot 2026-02-23 075322" src="https://github.com/user-attachments/assets/ccb0e68e-c8d2-40f5-8317-5b317cafb90c" />
+
+
 ---
 
 ## Challenges and Solutions
@@ -239,6 +248,9 @@ LinkedIn: https://linkedin.com/in/mukhtarsheikh
 ## Conclusion
 
 This project successfully demonstrates a complete DevOps pipeline that automates infrastructure provisioning, application deployment, and validation using Terraform and GitLab CI/CD.
+
+<img width="1919" height="947" alt="Screenshot 2026-02-23 081031" src="https://github.com/user-attachments/assets/b2f23c91-e576-4b5e-98f4-cd9a39e5ae9f" />
+
 
 The deployment is fully automated, secure, and follows DevOps best practices.
 
